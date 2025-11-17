@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -eux
 # sort raw EM scans into folders for feabas or other
 
 # by Sanja Jasek
@@ -61,6 +61,14 @@ do
     # and the current layer, then add that to the number of renamed layer
     img_name="$(basename $image)"
     read coord layer_filename id_num < <(basename "${img_name}" | sed -E 's/Tile_(r[0-9]+-c[0-9]+)_S_([0-9]+)_([0-9]+).tif/\1 \2 \3/g')
+    
+    # check if defining variables failed, if the filename doesn't follow the pattern
+    if [[ -z $coord || -z $layer_filename || -z $id_num ]]
+    then
+        echo "$img_name doesn't follow naming convention. Rename failed."
+        exit 1
+    fi
+
     # padding numbers is often needed, but also need unpadded version because bash arithmetic and printf have problems
     padding=${#num_layers}
     layer_filename_num=$((10#$layer_filename))
