@@ -21,7 +21,7 @@ outdir="$2"
 
 
 # use find instead of ls, because I don't know how many levels of folders there is - 1 or 2 levels are common
-readarray -t images  < <(find "$indir" -iname "*.tif" | sort -n)
+readarray -t images  < <(find "$indir" -iname "*.tif" | sort -V)
 
 # check if paths have spaces or funny stuff, and exit if yes
 weird_char=$(printf '%s\n' "$outdir" "${images[@]}" | grep -n '[^A-Za-z0-9._/:,-\\]' | wc -l)
