@@ -39,19 +39,10 @@ fi
 # I have to find the first subfolder, and probably keep the numbering from there, it should be correct for the first one,
 # then find the second folder, and give sections layer number that is 1 +  number of layers in first folder, etc
 
-# get folders from image file list, so I don't have to run find again
-
-#folders=()
-#for image in ${images[@]}
-#do
-#    folders+=( ${image%/*} )
-#done
-
-folders_uniq=($(echo "${folders[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 
 # get number of layers, so it's easier to keep track
 
-num_layers=$(printf "%s\n" "${images[@]}" | grep -oP '(?<=_S_)[0-9]+' | sort -u | wc -l)
+num_layers=$(printf "%s\n" "${images[@]}" | grep -oE '.*/Tile_r' | sort -u | wc -l)
 
 
 for image in ${images[@]}
@@ -100,7 +91,7 @@ do
     
     if [[ ! -d ${outdir}/$new_layer ]]
     then
-        mkdir ${outdir}/$new_layer || { echo "mkdir ${outdir}/$new_layer failed" ; exit 1 ; }
+        echo mkdir ${outdir}/$new_layer || { echo "mkdir ${outdir}/$new_layer failed" ; exit 1 ; }
     fi
 
     new_img_name=${new_layer}_${coord}_${id_num}.tif
