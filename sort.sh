@@ -95,7 +95,13 @@ do
     fi
 
     new_img_name=${new_layer}_${coord}_${id_num}.tif
-    echo $image ${outdir}/${new_layer}/${new_img_name} || { echo "copy $image failed" ; exit 1 ; }
+    
+    # check if it was already renamed or moved
+    if [[ ! -f ${outdir}/${new_layer}/${new_img_name} ]]
+    then
+        echo $image ${outdir}/${new_layer}/${new_img_name} || { echo "copy $image failed" ; exit 1 ; }
+    fi
+
     previous_layer_filename=$layer_filename
     previous_layer_actual=$new_layer
     previous_folder="$folder"
