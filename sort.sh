@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -eu
 # sort raw EM scans into folders for feabas or other
 
 # by Sanja Jasek
@@ -39,6 +39,8 @@ fi
 # I have to find the first subfolder, and probably keep the numbering from there, it should be correct for the first one,
 # then find the second folder, and give sections layer number that is 1 +  number of layers in first folder, etc
 
+
+info_file="${outdir}/renaming_map.tsv"
 
 # get number of layers, so it's easier to keep track
 
@@ -91,7 +93,7 @@ do
     
     if [[ ! -d ${outdir}/$new_layer ]]
     then
-        echo mkdir ${outdir}/$new_layer || { echo "mkdir ${outdir}/$new_layer failed" ; exit 1 ; }
+        mkdir ${outdir}/$new_layer || { echo "mkdir ${outdir}/$new_layer failed" ; exit 1 ; }
     fi
 
     new_img_name=${new_layer}_${coord}_${id_num}.tif
@@ -99,7 +101,8 @@ do
     # check if it was already renamed or moved
     if [[ ! -f ${outdir}/${new_layer}/${new_img_name} ]]
     then
-        echo $image ${outdir}/${new_layer}/${new_img_name} || { echo "copy $image failed" ; exit 1 ; }
+        echo cp $image ${outdir}/${new_layer}/${new_img_name} || { echo "copy $image failed" ; exit 1 ; }
+	echo -e "$image\t${outdir}/${new_layer}/${new_img_name}" >> "$info_file"
     fi
 
     previous_layer_filename=$layer_filename
