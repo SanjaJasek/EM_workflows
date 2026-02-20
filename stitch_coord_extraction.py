@@ -18,10 +18,7 @@ Image.MAX_IMAGE_PIXELS = None
 # --- Functions ---
 
 # Function to get the image resolution from a TIFF file's metadata
-# If it can't find it, it uses a default value
 def get_tiff_resolution(filepath):
-    # Default resolution in nanometers per pixel
-    default_nm = 4.0
     
     # Try to open the image
     img = Image.open(filepath)
@@ -49,9 +46,8 @@ def get_tiff_resolution(filepath):
                 img.close()
                 return resolution
             
-    # If we couldn't get a resolution from the file, use the default
     img.close()
-    return default_nm
+    return
 
 # Function to go through all image files in a folder and create a coordinate file
 def create_stitch_coordinate_file_from_dir(input_dir, output_dir, resolution_nm, overlap_percentage):
@@ -157,6 +153,7 @@ def main():
     args = parser.parse_args()
 
     # Get the path to where this script is running
+    # use this as a default path if path is not given
     MY_PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
     # Use the overlap value directly
@@ -165,7 +162,7 @@ def main():
     # Validate overlap
     if not (0 <= OVERLAP < 1):
         print("Error: --overlap must be between 0 and 1.")
-        return
+        sys.exit(1)
 
     # Determine input/output folders
     raw_data_dir = args.input or os.path.join(MY_PROJECT_DIR, "raw_data")
