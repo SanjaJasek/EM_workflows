@@ -101,7 +101,7 @@ do
     # check if it was already renamed or moved
     if [[ ! -f ${outdir}/${new_layer}/${new_img_name} ]]
     then
-        echo cp $image ${outdir}/${new_layer}/${new_img_name} || { echo "copy $image failed" ; exit 1 ; }
+        cp $image ${outdir}/${new_layer}/${new_img_name} || { echo "copy $image failed" ; exit 1 ; }
 	echo -e "$image\t${outdir}/${new_layer}/${new_img_name}" >> "$info_file"
     fi
 
