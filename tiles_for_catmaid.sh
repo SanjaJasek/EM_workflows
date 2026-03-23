@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -eux
+set -eux
 # run optipng on the files, because a pure white tile reduced size 10x, thouh on images with actual content it's much less than that
 
 # keep tile size for now, but in the future retile to make them smaller
@@ -19,8 +19,8 @@ then
 	exit 0
 fi
 
-indir="$1"
-outdir="$2"
+indir=$(realpath "$1")
+outdir=$(realpath "$2")
 
 rename_tile() {
 	filepath="$1"
@@ -30,15 +30,19 @@ rename_tile() {
 
 	read z row column < <(	echo "$filename" | sed -E 's/^([0-9]+)_tr([0-9]+)-tc([0-9]+)\.png$/\1 \2 \3/')
 	
-	# decrement z because in catmaid index starts from 0
+	# decrement all because in catmaid index starts from 0
+  # z needs padding, y and x don't
 	padding=${#z}
 	z=$( printf "%0${padding}d\n" $((10#$z - 1 )) )
+  row=$(( $row - 1 ))
+  column=$(( $column - 1 ))
 
+  echo "${outdir}/$z/$zoomlevel/"
 	[[ -d ${outdir}/$z/$zoomlevel ]] || mkdir -p ${outdir}/$z/$zoomlevel || { echo "Cannot create ${outdir}/$z/$zoomlevel"; exit 1 ; }
 
 	outpath="${outdir}/$z/$zoomlevel/${row}_${column}.png"
 
-	if ![[ -f "$outpath" ]]
+	if [[ ! -f "$outpath" ]]
 	then
 		cp "$filepath" "$outpath"
 		optipng "$outpath"
@@ -46,5 +50,6 @@ rename_tile() {
 }
 
 export -f rename_tile
+export outdir
 
 find "$indir" -iname "*.png" | sort -V | parallel rename_tile
