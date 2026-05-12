@@ -39,7 +39,7 @@ fi
 # I have to find the first subfolder, and probably keep the numbering from there, it should be correct for the first one,
 # then find the second folder, and give sections layer number that is 1 +  number of layers in first folder, etc
 
-
+error_log="${outdir}/error.log"
 info_file="${outdir}/renaming_map.tsv"
 
 # get number of layers, so it's easier to keep track
@@ -58,8 +58,7 @@ do
     # check if defining variables failed, if the filename doesn't follow the pattern
     if [[ -z $coord || -z $layer_filename || -z $id_num ]]
     then
-        echo "$img_name doesn't follow naming convention. Rename failed."
-        exit 1
+        echo "$img_name doesn't follow naming convention. Rename failed." | tee "$error_log"
     fi
 
     # padding numbers is often needed, but also need unpadded version because bash arithmetic and printf have problems
